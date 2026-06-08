@@ -34,6 +34,7 @@ export default function InvitationApp() {
   const [terminalText, setTerminalText] = useState([]);
   const [displayedImageUrl, setDisplayedImageUrl] = useState('');
   const [isFolderOpened, setIsFolderOpened] = useState(false);
+  const [glitchLines, setGlitchLines] = useState([]);
 
   const emailImageMap = {
     'trsyjr@dswd.gov.ph': sy,
@@ -62,7 +63,6 @@ export default function InvitationApp() {
   const video1Ref = useRef(null);
   const video2Ref = useRef(null);
   const introCanvasRef = useRef(null);
-  const staticCanvasRef = useRef(null);
 
   const hackLogs = [
     ">> INITIALIZING NEURAL LINK START PROBE...",
@@ -188,6 +188,35 @@ export default function InvitationApp() {
     return () => clearInterval(checkTime);
   }, [stage]);
 
+  // Glitch generation logic for transition sequence
+  useEffect(() => {
+    if (stage !== 'blackout') return;
+    
+    const errorBank = [
+      "ERROR: CRITICAL_BUFFER_OVERFLOW", "FATAL CORE MISALIGNMENT...", "STMT_REF_UNKNOWN [0x00FF31]",
+      "WARNING: CORRUPTED DATA PACKET DETECTED", "SYSTEM RESTRICTION BREAKOUT!!", "00010111001001101",
+      "UNAUTHORIZED DECRYPTION KEY ATTEMPTED", "LINK_RECON_REJECTED", "SIG_STACK_OVERWRITE_ERR"
+    ];
+
+    const glitchInterval = setInterval(() => {
+      const lineCount = Math.floor(Math.random() * 5) + 3;
+      const lines = [];
+      for (let i = 0; i < lineCount; i++) {
+        lines.push({
+          id: Math.random(),
+          text: errorBank[Math.floor(Math.random() * errorBank.length)],
+          top: Math.random() * 90 + '%',
+          left: Math.random() * 10 + '%',
+          scale: Math.random() * 0.4 + 0.8,
+          opacity: Math.random() * 0.5 + 0.5
+        });
+      }
+      setGlitchLines(lines);
+    }, 90);
+
+    return () => clearInterval(glitchInterval);
+  }, [stage]);
+
   const handleJoinClick = () => {
     setStage('blackout');
   };
@@ -202,34 +231,6 @@ export default function InvitationApp() {
       setStage('whiteFlash'); 
     } else {
       alert('Node mismatch. Invalid user signature identified.');
-    }
-  };
-
-  const folderContainerVariants = {
-    hidden: { scale: 0.8, y: 120, opacity: 0 },
-    visible: {
-      scale: 1,
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" }
-    }
-  };
-
-  const invitationCardVariants = {
-    hidden: { 
-      scale: 0.4,
-      opacity: 0,
-      zIndex: 15
-    },
-    visible: {
-      scale: 3.5, 
-      opacity: 1,
-      zIndex: 50, 
-      transition: { 
-        duration: 1.2,
-        ease: [0.16, 1, 0.3, 1],
-        delay: 0.4
-      }
     }
   };
 
@@ -267,6 +268,12 @@ export default function InvitationApp() {
             muted
             playsInline
             className="w-full h-full object-cover"
+          />
+
+          <div 
+            className={`absolute inset-0 transition-all duration-1000 ease-out pointer-events-none z-20 ${
+              isFolderOpened ? 'backdrop-blur-sm bg-black/10' : 'backdrop-blur-none bg-transparent'
+            }`} 
           />
 
           {/* Eyelids configuring natural blinks */}
@@ -432,116 +439,145 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* BLACKOUT SEQUENCE */}
+        {/* GLITCH OUT ERROR SEQUENCE */}
         {stage === 'blackout' && (
           <motion.div
             key="blackout-stage"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            onAnimationComplete={() => setStage('video2')}
-            className="absolute inset-0 z-55 bg-black w-full h-full"
-          />
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onAnimationComplete={() => {
+              setTimeout(() => setStage('video2'), 1800);
+            }}
+            className="absolute inset-0 z-55 bg-zinc-950 select-none overflow-hidden flex flex-col justify-between p-6 border-4 border-red-600/30"
+          >
+            <div className="w-full flex items-center justify-between text-red-500/80 text-xs border-b border-red-900/50 pb-2">
+              <span>SYSTEM_MALFUNCTION_BREAKDOWN</span>
+              <span className="animate-ping font-bold">● RECONNECTING</span>
+            </div>
+            
+            <div className="relative flex-1 w-full font-mono">
+              {glitchLines.map(line => (
+                <div
+                  key={line.id}
+                  style={{
+                    position: 'absolute',
+                    top: line.top,
+                    left: line.left,
+                    transform: `scale(${line.scale})`,
+                    opacity: line.opacity,
+                    textShadow: '2px 0px #ff0000, -2px 0px #00ffff'
+                  }}
+                  className="text-red-500 font-black text-sm uppercase tracking-widest whitespace-nowrap bg-black/40 px-2 border border-red-500/20"
+                >
+                  {line.text}
+                </div>
+              ))}
+            </div>
+
+            <div className="w-full text-[10px] text-zinc-600 tracking-wider text-center pt-2 border-t border-zinc-900">
+              CRITICAL SEGMENTATION SECURITY EXCEPTION INITIATED // REBOOT IN PROG...
+            </div>
+          </motion.div>
         )}
 
-        {/* PHASE 3: OPENING ENVELOPE / FLOATING ELEMENTS */}
+        {/* PHASE 3: OPENING ENVELOPE / FULL SCREEN CONTENT LANDSCAPE GRID */}
         {stage === 'envelope' && (
-          <div className="absolute inset-0 z-40 flex items-center justify-center p-4 bg-transparent perspective-[1500px]">
-            <motion.div
-              key="folder-stage"
-              variants={folderContainerVariants}
-              initial="hidden"
-              animate="visible"
-              onClick={() => {
-                if (!isFolderOpened) setIsFolderOpened(true);
-              }}
-              className={`relative w-[340px] h-[460px] flex items-center justify-center ${!isFolderOpened ? 'cursor-pointer' : ''}`}
-            >
-              
-              {/* BACK PORTRAIT FOLDER BASEPLATE */}
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-800 via-blue-950 to-zinc-950 rounded-2xl z-10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] border-2 border-blue-600/30 overflow-hidden">
-                <div className="absolute inset-y-0 left-0 w-5 bg-black/40 border-r border-blue-500/10" />
-                <div className="absolute bottom-0 inset-x-0 h-1/3 bg-zinc-900/90 border-t-2 border-dashed border-blue-600/20" />
-              </div>
-
-              {/* FLOATING SCALED OVERSIZE GRID VIEWPORTS */}
-              <div className="absolute inset-0 flex justify-center items-center overflow-visible z-45 pointer-events-none">
-                <motion.div
-                  variants={invitationCardVariants}
-                  initial="hidden"
-                  animate={isFolderOpened ? "visible" : "hidden"}
-                  onAnimationComplete={() => { 
-                    if (isFolderOpened) {
-                      setTimeout(() => setStage('tvTurnedOff'), 12000); 
-                    }
-                  }}
-                  className="w-[92vw] max-w-6xl grid grid-cols-2 gap-8 items-center justify-center pointer-events-auto relative bg-transparent"
-                >
-                  {/* LEFT ELEMENT: Enlarged Vertical Profile Invitation Card */}
-                  <div className="w-full flex justify-end pr-2">
-                    <img 
-                      src={displayedImageUrl} 
-                      alt="User Profile Display" 
-                      className="w-full max-w-[180px] aspect-[3/4.2] object-cover rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/10"
-                    />
-                  </div>
-
-                  {/* RIGHT ELEMENT: Enlarged QR Display Stack with Typography Labels */}
-                  <div className="w-full flex flex-col items-center justify-center gap-3 pl-2">
-                    <span className="text-white text-[7px] font-black tracking-[0.25em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                      TAKE A PHOTO
-                    </span>
-                    
-                    <img 
-                      src={pbbQR} 
-                      alt="pbbQR Code Asset" 
-                      className="w-28 h-28 object-contain rounded-xl bg-white p-2 shadow-[0_25px_60px_rgba(0,0,0,0.85)]"
-                    />
-
-                    <span className="text-zinc-300 text-[5px] font-bold tracking-[0.12em] text-center max-w-[150px] uppercase leading-normal drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                      CONTRIBUTION WILL BE ANNOUNCED SOON
-                    </span>
-                  </div>
-
-                  {/* BOTTOM FOOTER OVERLAY */}
-                  <div className="absolute -bottom-10 inset-x-0 pt-1 pb-1 px-2 text-[3px] text-zinc-400 font-mono uppercase tracking-widest z-20 pointer-events-none flex justify-between items-end">
-                    <span className="opacity-50">CBD-PLDS PBB 2026</span>
-                    <span className="opacity-60 truncate max-w-[90px] text-right">SIG: {email}</span>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* FRONT COVER FOLDER PANEL */}
+          <div className="absolute inset-0 z-40 flex items-center justify-center bg-transparent">
+            
+            {/* INITIAL FOLDER ICON WRAPPER / CLICK TO REVEAL */}
+            {!isFolderOpened && (
               <motion.div
-                style={{ originX: "0%", transformStyle: "preserve-3d" }}
-                initial={{ rotateY: 0, zIndex: 25, opacity: 1 }}
-                animate={isFolderOpened ? { rotateY: -140, opacity: 0.05, filter: "blur(2px)", x: -20 } : { rotateY: 0, opacity: 1, x: 0 }}
-                transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
-                className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 rounded-2xl border-2 border-blue-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center p-6 backface-hidden"
+                key="folder-trigger"
+                initial={{ scale: 0.8, y: 50, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 1.1, opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                onClick={() => setIsFolderOpened(true)}
+                className="relative cursor-pointer w-[340px] h-[460px] flex flex-col items-center justify-center bg-gradient-to-br from-red-600 via-red-700 to-red-900 rounded-2xl border-2 border-red-500/40 shadow-[0_25px_50px_rgba(0,0,0,0.8)] p-6"
               >
-                <div className="absolute inset-y-0 left-0 w-4 bg-blue-800/90 rounded-l-2xl border-r border-blue-900/60" />
-                <div className="absolute top-4 right-4 text-blue-400/30 font-mono text-[9px]">//SECURE_08</div>
-                <div className="absolute bottom-4 left-8 text-blue-400/30 font-mono text-[9px]">PBB_2026//</div>
-
-                <div className="text-center border-2 border-double border-blue-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px] ml-2">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-300/40">
+                <div className="absolute top-4 right-4 text-red-400/30 font-mono text-[9px]">//SECURE_08</div>
+                <div className="absolute bottom-4 left-8 text-red-400/30 font-mono text-[9px]">PBB_2026//</div>
+                <div className="text-center border-2 border-double border-red-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px]">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-red-600 to-red-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-500/40">
                     <FolderOpen size={22} className="text-zinc-950" />
                   </div>
-                  <h2 className="text-blue-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
+                  <h2 className="text-red-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
                     CLASSIFIED DOCS
                   </h2>
-                  <p className="text-blue-400/80 font-mono text-[9px] uppercase tracking-widest">
+                  <p className="text-red-400/80 font-mono text-[9px] uppercase tracking-widest">
                     CASE FILE: CONFIDENTIAL
                   </p>
-                  <div className="w-12 h-0.5 bg-blue-500/30 mx-auto my-4" />
-                  <p className="text-blue-400 font-bold font-mono text-[10px] tracking-widest uppercase animate-pulse">
+                  <div className="w-12 h-0.5 bg-red-500/30 mx-auto my-4" />
+                  <p className="text-red-400 font-bold font-mono text-[10px] tracking-widest uppercase animate-pulse">
                     TAP TO OPEN
                   </p>
                 </div>
               </motion.div>
+            )}
 
-            </motion.div>
+            {/* FULLY EXPANDED CANVA-STYLE GRID LAYOUT REVEALED */}
+            {isFolderOpened && (
+              <motion.div
+                key="opened-folder-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                onAnimationComplete={() => {
+                  setTimeout(() => setStage('tvTurnedOff'), 15000);
+                }}
+                className="absolute inset-0 w-full h-full flex flex-col justify-between items-center p-8 z-50 pointer-events-auto bg-transparent"
+              >
+                {/* Floating twinkling star particles directly in-grid */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden mix-blend-screen opacity-70">
+                  <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-white rounded-full blur-[1px] animate-ping" style={{ animationDuration: '3s' }} />
+                  <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-white rounded-full blur-[2px] animate-pulse" style={{ animationDuration: '4s' }} />
+                  <div className="absolute bottom-1/4 left-1/4 w-2 h-2 bg-white rounded-full blur-[1px] animate-pulse" style={{ animationDuration: '2.5s' }} />
+                  <div className="absolute top-10 right-10 w-2 h-2 bg-white rounded-full blur-[1px] animate-ping" style={{ animationDuration: '5s' }} />
+                </div>
+
+                {/* Main Balanced Canva Workspace Section Split Container */}
+                <div className="flex-1 w-full max-w-6xl mx-auto flex items-center justify-center px-4">
+                  <div className="grid grid-cols-2 gap-12 items-center justify-center w-full">
+                    
+                    {/* LEFT CONTAINER LAYER: Dynamic User Card Sized Exactly to 3.5 Ratio Aspect, Expanded Max Width */}
+                    <div className="w-full flex justify-end">
+                      <img 
+                        src={displayedImageUrl} 
+                        alt="User Profile Display" 
+                        className="w-full max-w-[430px] aspect-[3.5/5] object-cover rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.85)] border-0"
+                      />
+                    </div>
+
+                    {/* RIGHT CONTAINER LAYER: Stacked Typography and Native Raw QR Element Retaining Exact Proportions */}
+                    <div className="w-full flex flex-col items-center justify-start text-center">
+                      <span className="text-white text-sm font-black tracking-[0.3em] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,1)] mb-4">
+                        TAKE A PHOTO
+                      </span>
+                      
+                      <img 
+                        src={pbbQR} 
+                        alt="pbbQR Code Asset" 
+                        className="w-64 h-64 object-contain shadow-[0_20px_50px_rgba(0,0,0,0.85)] bg-transparent rounded-none"
+                      />
+
+                      <span className="text-zinc-200 text-[11px] font-black tracking-[0.15em] max-w-[280px] uppercase leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,1)] mt-6">
+                        CONTRIBUTION WILL BE ANNOUNCED SOON
+                      </span>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* BOTTOM FIXED GLOBAL WORKSPACE SYSTEM FOOTER BAR */}
+                <div className="w-full max-w-7xl px-4 flex justify-between items-center text-[10px] text-zinc-400 font-mono uppercase tracking-widest opacity-60 mt-auto">
+                  <span>CBD-PLDS PBB 2026</span>
+                  <span className="truncate max-w-[250px]">SIG: {email}</span>
+                </div>
+              </motion.div>
+            )}
+
           </div>
         )}
 
