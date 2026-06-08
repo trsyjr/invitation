@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Activity, ShieldAlert, Cpu, EyeOff } from 'lucide-react';
+import { Terminal, Activity, ShieldAlert, Cpu, EyeOff, FolderOpen, Mail } from 'lucide-react';
 
 import pbbVideo from '../assets/PBB 2026.mp4'; 
 import wake from '../assets/Wake.mp4';
@@ -12,6 +12,7 @@ export default function InvitationApp() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [terminalText, setTerminalText] = useState([]);
   const [displayedImageUrl, setDisplayedImageUrl] = useState('');
+  const [isFolderOpened, setIsFolderOpened] = useState(false);
 
   const emailImageMap = {
     'trsyjr@dswd.gov.ph': '/path/to/image1.png',
@@ -21,7 +22,6 @@ export default function InvitationApp() {
   const video1Ref = useRef(null);
   const video2Ref = useRef(null);
   const introCanvasRef = useRef(null);
-  const suctionCanvasRef = useRef(null);
   const staticCanvasRef = useRef(null);
 
   const hackLogs = [
@@ -33,6 +33,34 @@ export default function InvitationApp() {
   ];
 
   const codeSnippets = ['01', '10', '0xFA', 'SYS_INIT', 'LINK_START', 'OVERRIDE', 'NULL', 'ROOT_ACCESS', 'DATA_VORTEX', '404', 'NaN', 'µS'];
+
+  // AGGRESSIVE HYPER-SPEED SCATTER TRAJECTORY ARRAYS
+  const floatingEnvelopes = Array.from({ length: 16 }).map((_, i) => {
+    const trajectory = i % 4;
+    let startX, startY, endX, endY;
+
+    if (trajectory === 0) { // Fast Left to Right Wide Out
+      startX = -40; startY = Math.random() * 120 - 10;
+      endX = 140; endY = startY + (Math.random() * 40 - 20);
+    } else if (trajectory === 1) { // Fast Right to Left Wide Out
+      startX = 140; startY = Math.random() * 120 - 10;
+      endX = -40; endY = startY + (Math.random() * 40 - 20);
+    } else if (trajectory === 2) { // Violent Downward Scatter
+      startX = Math.random() * 140 - 20; startY = -40;
+      endX = startX + (Math.random() * 60 - 30); endY = 140;
+    } else { // Violent Upward Scatter
+      startX = Math.random() * 140 - 20; startY = 140;
+      endX = startX + (Math.random() * 60 - 30); endY = -40;
+    }
+
+    return {
+      id: i,
+      size: Math.random() * 30 + 60, 
+      startX, startY, endX, endY,
+      duration: Math.random() * 1.0 + 1.2, // Ultra-fast chaotic speeds (1.2s - 2.2s)
+      delay: Math.random() * -4
+    };
+  });
 
   // PHASE 1: Terminal Typewriter Effect
   useEffect(() => {
@@ -125,112 +153,9 @@ export default function InvitationApp() {
     return () => { cancelAnimationFrame(animationFrameId); window.removeEventListener('resize', handleResize); };
   }, [stage]);
 
-  // HIGH-INTENSITY SPATIAL SUCTION ENGINE (Triggers on portalVortex stage)
-  useEffect(() => {
-    if (stage !== 'portalVortex') return;
-    const canvas = suctionCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let animationFrameId;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-    let speedFactor = 1;
-
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-
-    const vortexParticles = [];
-    // Flood the screen with matrix noise being swallowed up
-    const totalVortexParticles = 1200; 
-
-    class VortexLine {
-      constructor() { this.reset(); }
-      reset() {
-        this.angle = Math.random() * Math.PI * 2;
-        // Start far off screen to give a strong pulling feel
-        this.distance = Math.max(width, height) * (1.2 + Math.random() * 0.5); 
-        this.speed = Math.random() * 18 + 12;
-        this.length = Math.random() * 40 + 20;
-        this.text = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
-        this.size = Math.floor(Math.random() * 12) + 12;
-      }
-      update() {
-        // Accelerate everything exponentially as it pools into the center core
-        this.distance -= this.speed * speedFactor;
-        this.angle += 0.04 * (speedFactor * 0.5);
-        this.speed += 0.4; 
-        
-        if (this.distance <= 10) {
-          this.reset();
-        }
-      }
-      draw() {
-        const x = width / 2 + Math.cos(this.angle) * this.distance;
-        const y = height / 2 + Math.sin(this.angle) * this.distance;
-        
-        // Stretch strings visually along the trajectory vector
-        const alpha = Math.min(1, this.distance / 200);
-        ctx.fillStyle = `rgba(239, 68, 68, ${alpha})`;
-        ctx.font = `bold ${this.size + (1000 / (this.distance + 10))}px monospace`;
-        ctx.fillText(this.text, x, y);
-      }
-    }
-
-    for (let i = 0; i < totalVortexParticles; i++) {
-      vortexParticles.push(new VortexLine());
-      // Stagger initial distances to fill the spatial screen tunnel
-      vortexParticles[i].distance -= Math.random() * width;
-    }
-
-    const runSuction = () => {
-      speedFactor += 0.06; // Accelerate pull every frame
-      
-      // Heavy trail motion blur to emphasize the physical velocity pull
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-      ctx.fillRect(0, 0, width, height);
-
-      // Expanding cyber black hole event horizon
-      const radius = 20 + speedFactor * 18;
-
-      const gradient = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        0,
-        width / 2,
-        height / 2,
-        radius
-      );
-
-      gradient.addColorStop(0, '#000');
-      gradient.addColorStop(0.2, '#000');
-      gradient.addColorStop(0.8, '#ef4444');
-      gradient.addColorStop(1, 'rgba(239,68,68,0)');
-
-      ctx.beginPath();
-      ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-
-      ctx.shadowBlur = 60;
-      ctx.shadowColor = '#ef4444';
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      vortexParticles.forEach(p => { p.update(); p.draw(); });
-      animationFrameId = requestAnimationFrame(runSuction);
-    };
-
-    runSuction();
-    return () => { cancelAnimationFrame(animationFrameId); window.removeEventListener('resize', handleResize); };
-  }, [stage]);
-
   // CRUNCHY RETRO TELEVISION STATIC ENGINE
   useEffect(() => {
-    const isStaticState = stage === 'staticAfterFlash' || stage === 'staticLastBlink';
+    const isStaticState = stage === 'staticAfterFlash';
     if (!isStaticState) return;
 
     const canvas = staticCanvasRef.current;
@@ -241,7 +166,6 @@ export default function InvitationApp() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Hardware accelerated mini buffer
     const bufferCanvas = document.createElement('canvas');
     bufferCanvas.width = 320;
     bufferCanvas.height = 180;
@@ -314,35 +238,38 @@ export default function InvitationApp() {
     const lowerCaseEmail = email.toLowerCase().trim(); 
     if (emailImageMap[lowerCaseEmail]) {
       setDisplayedImageUrl(emailImageMap[lowerCaseEmail]);
-      setStage('portalVortex'); // Instantly transition to the deep pooling suction space
+      setStage('video1'); 
     } else {
       alert('Node mismatch. Invalid user signature identified.');
     }
   };
 
-  const envelopeVariants = {
-    hidden: { scale: 0, rotate: -45, y: 500, opacity: 0, zIndex: 40 },
-    flying: {
-      scale: [0, 1.35, 0.85, 1.08, 1],
-      rotate: [-45, 25, -15, 5, 0],
-      y: [500, -80, 40, -10, 0],
-      opacity: [0, 1, 1, 1, 1],
-      transition: { duration: 2.2, ease: "easeOut" }
+  // Folder Floating Entrance Animation
+  const folderContainerVariants = {
+    hidden: { scale: 0.8, y: 120, opacity: 0 },
+    visible: {
+      scale: 1,
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeOut" }
     }
   };
 
-  const cardRevealVariants = {
-    hidden: { y: 60, scale: 0.75, opacity: 0, zIndex: 15 },
+  // MAXIMUM SCALE BLOCK FOR FULL SCREEN PRESENCE
+  const invitationCardVariants = {
+    hidden: { 
+      scale: 0.6,
+      opacity: 0,
+      zIndex: 15
+    },
     visible: {
-      y: [60, -320, -60],     
-      scale: [0.75, 1.2, 1.85], 
-      opacity: [0, 1, 1],
-      zIndex: 45, 
+      scale: 1.80, // Massive full scale bump up
+      opacity: 1,
+      zIndex: 50, 
       transition: { 
-        duration: 3.2,
-        times: [0, 0.45, 1], 
-        ease: ["easeOut", "easeInOut", "backOut"],
-        delay: 1.8
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
+        delay: 0.4
       }
     }
   };
@@ -350,7 +277,7 @@ export default function InvitationApp() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center overflow-hidden font-mono text-white select-none relative w-full">
       
-      {/* Background Intro Canvas for Phases 1 & 2 */}
+      {/* Background Canvas Intro */}
       {['hacked', 'form'].includes(stage) && (
         <canvas ref={introCanvasRef} className="absolute inset-0 w-full h-full block z-0" />
       )}
@@ -367,7 +294,35 @@ export default function InvitationApp() {
             onEnded={handleVideo1End}
             className="w-full h-full object-cover"
           />
-          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${stage === 'envelope' ? 'backdrop-blur-sm bg-black/40' : 'backdrop-blur-none bg-transparent'}`} />
+          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${stage === 'envelope' ? 'backdrop-blur-md bg-black/60' : 'backdrop-blur-none bg-transparent'}`} />
+        </div>
+      )}
+
+      {/* HIGH VELOCITY RAMPAGE SCATTER ENVELOPES */}
+      {stage === 'envelope' && (
+        <div className="absolute inset-0 w-full h-full z-35 pointer-events-none overflow-hidden">
+          {floatingEnvelopes.map((env, idx) => (
+            <motion.div
+              key={env.id}
+              initial={{ x: `${env.startX}vw`, y: `${env.startY}vh`, opacity: 0, rotate: 0 }}
+              animate={{
+                x: `${env.endX}vw`,
+                y: `${env.endY}vh`,
+                rotate: [0, idx % 2 === 0 ? 1080 : -1080], // Aggressive spin rate
+                opacity: [0, 1, 1, 0]
+              }}
+              transition={{
+                duration: env.duration,
+                delay: env.delay,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{ width: env.size, height: env.size }}
+              className="absolute text-yellow-400 drop-shadow-[0_12px_30px_rgba(234,179,8,0.7)] flex items-center justify-center"
+            >
+              <Mail className="w-full h-full" strokeWidth={1.0} />
+            </motion.div>
+          ))}
         </div>
       )}
 
@@ -410,13 +365,7 @@ export default function InvitationApp() {
             key="form-stage"
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ 
-              scale: 0.01, 
-              rotate: 360, 
-              filter: "blur(15px)",
-              opacity: 0,
-              transition: { duration: 1.6, ease: "anticipate" } 
-            }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
             className="relative z-50 w-full min-h-screen flex items-center justify-center p-4 bg-transparent"
           >
             <div className="relative w-full max-w-md bg-zinc-950/95 border border-red-500/30 p-8 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
@@ -428,7 +377,7 @@ export default function InvitationApp() {
               </div>
               <div className="text-center mb-6">
                 <h1 className="text-xl font-black tracking-widest text-red-400 uppercase flex items-center justify-center gap-2">
-                  <Cpu size={18} /> NODE VERIFICATION
+                  <Cpu size={18} /> INSERT EMAIL
                 </h1>
               </div>
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -450,111 +399,98 @@ export default function InvitationApp() {
                   type="submit"
                   className="w-full py-3.5 bg-red-950 hover:bg-red-900 text-red-400 border border-red-500/60 font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 text-xs"
                 >
-                  <EyeOff size={14} /> EXECUTE_DECRYPTION
+                  <EyeOff size={14} /> SUBMIT
                 </motion.button>
               </form>
             </div>
           </motion.div>
         )}
 
-        {/* PHASE 2.5: dedicated HIGH-INTENSITY SUCTION INTERSTITIAL */}
-        {stage === 'portalVortex' && (
-          <motion.div
-            key="portal-vortex-stage"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-55 bg-black w-full h-full overflow-hidden"
-            onAnimationComplete={() => {
-              setTimeout(() => setStage('video1'), 2200);
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{
-                scale: [0, 0.4, 1.5, 4, 12],
-                opacity: [1, 1, 0.9, 0.5, 0]
-              }}
-              transition={{
-                duration: 2.2,
-                ease: 'easeIn'
-              }}
-              className="absolute left-1/2 top-1/2 w-40 h-40 rounded-full bg-red-500 blur-3xl -translate-x-1/2 -translate-y-1/2"
-            />
-
-            <motion.div
-              initial={{ scale: 1 }}
-              animate={{
-                scale: [1, 1.15, 1.4, 2.5]
-              }}
-              transition={{
-                duration: 2.2,
-                ease: 'easeIn'
-              }}
-              className="absolute inset-0 bg-red-500/5 blur-3xl"
-            />
-
-            <canvas
-              ref={suctionCanvasRef}
-              className="absolute inset-0 w-full h-full block"
-            />
-          </motion.div>
-        )}
-
-        {/* PHASE 3: ENVELOPE STAGE */}
+        {/* ========================================================================= */}
+        {/* PHASE 3: SIDEWAY BOOK FOLDER WITH FULL-BLEED MASSIVE INVITATION DISPLAY   */}
+        {/* ========================================================================= */}
         {stage === 'envelope' && (
-          <div className="absolute inset-0 z-40 flex items-center justify-center bg-transparent">
+          <div className="absolute inset-0 z-40 flex items-center justify-center p-4 bg-transparent perspective-[1500px]">
             <motion.div
-              key="envelope-stage"
-              variants={envelopeVariants}
+              key="folder-stage"
+              variants={folderContainerVariants}
               initial="hidden"
-              animate="flying"
-              className="relative flex items-center justify-center w-[440px] h-[300px] mt-28"
+              animate="visible"
+              onClick={() => {
+                if (!isFolderOpened) setIsFolderOpened(true);
+              }}
+              className={`relative w-[340px] h-[460px] flex items-center justify-center ${!isFolderOpened ? 'cursor-pointer' : ''}`}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-yellow-500 to-yellow-600 rounded-b-2xl shadow-2xl border border-yellow-400/50 z-10" />
+              
+              {/* BACK PORTRAIT FOLDER BASEPLATE */}
+              <div className="absolute inset-0 bg-gradient-to-b from-amber-800 via-amber-900 to-zinc-950 rounded-2xl z-10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] border-2 border-amber-600/30 overflow-hidden">
+                <div className="absolute inset-y-0 left-0 w-5 bg-black/40 border-r border-amber-500/10" />
+                <div className="absolute bottom-0 inset-x-0 h-1/3 bg-zinc-900/90 border-t-2 border-dashed border-amber-600/20" />
+              </div>
 
+              {/* MASSIVE FULL-BLEED INVITATION CARD */}
+              <div className="absolute inset-0 flex justify-center items-center overflow-visible z-45 pointer-events-none">
+                <motion.div
+                  variants={invitationCardVariants}
+                  initial="hidden"
+                  animate={isFolderOpened ? "visible" : "hidden"}
+                  onAnimationComplete={() => { 
+                    if (isFolderOpened) {
+                      setTimeout(() => setStage('blinding'), 8500); 
+                    }
+                  }}
+                  className="w-[94%] h-[445px] bg-zinc-950 rounded-lg shadow-[0_45px_100px_rgba(0,0,0,0.95)] border border-zinc-800 flex flex-col overflow-hidden pointer-events-auto relative"
+                >
+                  {/* FULL IMAGE BACKGROUND IMMERSION FRAME */}
+                  <div className="w-full h-full absolute inset-0 z-10 bg-black">
+                    <img 
+                      src={displayedImageUrl} 
+                      alt="Full Scale Invitation Layer" 
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+
+                  {/* MINIMAL OVERLAY LOG LABEL AT THE BASE FOR METRICS */}
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-8 pb-1.5 px-2 text-[5px] text-zinc-400 font-mono uppercase tracking-widest z-20 pointer-events-none flex justify-between items-end">
+                    <span className="opacity-60">CBD-PLDS PBB 2026</span>
+                    <span className="opacity-70 truncate max-w-[120px] text-right">SIG: {email}</span>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* FRONT COVER FOLDER PANEL (BOOK SIDEWAYS ACTION) */}
               <motion.div
-                variants={cardRevealVariants}
-                initial="hidden"
-                animate="visible"
-                onAnimationComplete={() => { 
-                  setTimeout(() => setStage('blinding'), 6000); 
-                }}
-                className="absolute left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-xl p-2.5 shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-zinc-200 text-center flex flex-col items-center"
+                style={{ originX: "0%", transformStyle: "preserve-3d" }}
+                initial={{ rotateY: 0, zIndex: 25, opacity: 1 }}
+                animate={isFolderOpened ? { rotateY: -140, opacity: 0.05, filter: "blur(2px)", x: -20 } : { rotateY: 0, opacity: 1, x: 0 }}
+                transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+                className="absolute inset-0 bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 rounded-2xl border-2 border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center p-6 backface-hidden"
               >
-                <div className="w-full mb-1.5 bg-zinc-50 p-1.5 rounded-lg border border-zinc-100">
-                  <h2 className="text-yellow-600 font-black font-mono tracking-[0.2em] text-[8px] uppercase">
-                    ★ DECRYPTED INVITATION MANIFEST ★
-                  </h2>
-                  <h1 className="text-zinc-950 font-black text-sm tracking-tight uppercase mt-0.5">
-                    YOU ARE INVITED
-                  </h1>
-                </div>
+                <div className="absolute inset-y-0 left-0 w-4 bg-amber-800/90 rounded-l-2xl border-r border-amber-900/60" />
+                <div className="absolute top-4 right-4 text-amber-400/30 font-mono text-[9px]">//SECURE_08</div>
+                <div className="absolute bottom-4 left-8 text-amber-400/30 font-mono text-[9px]">PBB_2026//</div>
 
-                <div className="w-full h-[330px] rounded-lg bg-zinc-950 flex items-center justify-center overflow-hidden border border-zinc-900 shadow-inner">
-                  <img src={displayedImageUrl} alt="Manifest Frame" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-[7px] text-zinc-400 font-mono uppercase tracking-widest mt-2 pt-1 border-t border-zinc-100 w-full">
-                  CREDENTIAL LOCK: {email}
+                <div className="text-center border-2 border-double border-amber-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px] ml-2">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-300/40">
+                    <FolderOpen size={22} className="text-zinc-950" />
+                  </div>
+                  <h2 className="text-amber-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
+                    CLASSIFIED DOCS
+                  </h2>
+                  <p className="text-amber-500/80 font-mono text-[9px] uppercase tracking-widest">
+                    CASE FILE: CONFIDENTIAL
+                  </p>
+                  <div className="w-12 h-0.5 bg-amber-500/30 mx-auto my-4" />
+                  <p className="text-amber-400 font-bold font-mono text-[10px] tracking-widest uppercase animate-pulse">
+                    TAP TO OPEN
+                  </p>
                 </div>
               </motion.div>
 
-              <div className="absolute inset-0 z-20 pointer-events-none">
-                <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[220px] border-l-yellow-400/95 border-t-[150px] border-t-transparent border-b-[150px] border-b-yellow-400/95 rounded-bl-2xl filter drop-shadow-md" />
-                <div className="absolute bottom-0 right-0 w-0 h-0 border-r-[220px] border-r-yellow-400/95 border-t-[150px] border-t-transparent border-b-[150px] border-b-yellow-400/95 rounded-br-2xl filter drop-shadow-md" />
-                <div className="absolute bottom-0 left-0 w-0 h-0 border-l-[220px] border-l-transparent border-r-[220px] border-r-transparent border-b-[150px] border-b-yellow-500 rounded-b-2xl" />
-              </div>
-
-              <motion.div
-                style={{ originY: 0, transformStyle: "preserve-3d" }}
-                initial={{ rotateX: 0, zIndex: 25 }}
-                animate={{ rotateX: 180, zIndex: 5 }}
-                transition={{ rotateX: { duration: 0.8, ease: "easeInOut", delay: 0.9 }, zIndex: { delay: 1.2 } }}
-                className="absolute top-0 left-0 w-0 h-0 border-l-[220px] border-l-transparent border-r-[220px] border-r-transparent border-t-[150px] border-t-yellow-300 filter drop-shadow-md"
-              />
             </motion.div>
           </div>
         )}
+        {/* ========================================================================= */}
 
         {/* PHASE 4: BLINDING FLASHBANG */}
         {stage === 'blinding' && (
@@ -563,7 +499,7 @@ export default function InvitationApp() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 1 }}
-            transition={{ duration: 1.2 }}
+            transition={{ duration: 2.2 }}
             onAnimationComplete={() => setStage('staticAfterFlash')}
             className="absolute inset-0 z-55 bg-white"
           />
@@ -585,7 +521,7 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* PHASE 5: POV EYE BLINKING VIDEO */}
+        {/* PHASE 5: POV EYE BLINKING VIDEO & POWER-OFF DESTRUCTION ENGINE */}
         {stage === 'video2' && (
           <motion.div
             key="video2-stage"
@@ -619,21 +555,34 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* PROPER HEAVY TV SNOW STATIC RIGHT BEFORE TAB CLOSURE */}
+        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE */}
         {stage === 'staticLastBlink' && (
           <motion.div
             key="static-last-blink"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 z-55 bg-black w-full h-full"
+            className="absolute inset-0 z-55 bg-black w-full h-full flex items-center justify-center"
             onAnimationComplete={() => {
               setTimeout(() => {
                 window.close();
                 setTimeout(() => { window.location.replace('about:blank'); }, 100);
-              }, 1600); // Gives 1.6s of dense analog TV static snow before tearing the page down
+              }, 1200); 
             }}
           >
-            <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full block z-55" />
+            <motion.div 
+              initial={{ scaleY: 1, scaleX: 1, opacity: 1 }}
+              animate={{ 
+                scaleY: [1, 0.012, 0.012, 0],
+                scaleX: [1, 1, 0.02, 0],
+                backgroundColor: ["#fff", "#fff", "#fff", "#000"]
+              }}
+              transition={{
+                duration: 0.7,
+                times: [0, 0.4, 0.85, 1],
+                ease: "easeOut"
+              }}
+              className="w-full h-2 bg-white shadow-[0_0_30px_rgba(255,255,255,1),0_0_60px_rgba(255,255,255,0.8)]"
+            />
           </motion.div>
         )}
 
