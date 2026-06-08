@@ -188,31 +188,33 @@ export default function InvitationApp() {
     return () => clearInterval(checkTime);
   }, [stage]);
 
-  // Glitch generation logic for transition sequence
+  // Enhanced visual glitch generation logic for transition sequence
   useEffect(() => {
     if (stage !== 'blackout') return;
     
     const errorBank = [
       "ERROR: CRITICAL_BUFFER_OVERFLOW", "FATAL CORE MISALIGNMENT...", "STMT_REF_UNKNOWN [0x00FF31]",
       "WARNING: CORRUPTED DATA PACKET DETECTED", "SYSTEM RESTRICTION BREAKOUT!!", "00010111001001101",
-      "UNAUTHORIZED DECRYPTION KEY ATTEMPTED", "LINK_RECON_REJECTED", "SIG_STACK_OVERWRITE_ERR"
+      "UNAUTHORIZED DECRYPTION KEY ATTEMPTED", "LINK_RECON_REJECTED", "SIG_STACK_OVERWRITE_ERR",
+      "KERNEL_PANIC: NULL_POINTER", ">> DATA_VORTEX_FAILED <<", "0xG35_LINK_LOST"
     ];
 
     const glitchInterval = setInterval(() => {
-      const lineCount = Math.floor(Math.random() * 5) + 3;
+      const lineCount = Math.floor(Math.random() * 9) + 6; // Increased element density
       const lines = [];
       for (let i = 0; i < lineCount; i++) {
         lines.push({
           id: Math.random(),
           text: errorBank[Math.floor(Math.random() * errorBank.length)],
-          top: Math.random() * 90 + '%',
-          left: Math.random() * 10 + '%',
-          scale: Math.random() * 0.4 + 0.8,
-          opacity: Math.random() * 0.5 + 0.5
+          top: Math.random() * 92 + '%',
+          left: Math.random() * 18 + '%',
+          scale: Math.random() * 0.5 + 0.85,
+          opacity: Math.random() * 0.6 + 0.4,
+          skewX: Math.random() * 24 - 12 + 'deg' // Added active horizontal layer skewing
         });
       }
       setGlitchLines(lines);
-    }, 90);
+    }, 55); // Sped up frame loop timing for intensity
 
     return () => clearInterval(glitchInterval);
   }, [stage]);
@@ -452,6 +454,9 @@ export default function InvitationApp() {
             }}
             className="absolute inset-0 z-55 bg-zinc-950 select-none overflow-hidden flex flex-col justify-between p-6 border-4 border-red-600/30"
           >
+            {/* Embedded scanline channel separation overlay style */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-red-500/5 to-transparent mix-blend-color-dodge animate-pulse" />
+            
             <div className="w-full flex items-center justify-between text-red-500/80 text-xs border-b border-red-900/50 pb-2">
               <span>SYSTEM_MALFUNCTION_BREAKDOWN</span>
               <span className="animate-ping font-bold">● RECONNECTING</span>
@@ -465,9 +470,9 @@ export default function InvitationApp() {
                     position: 'absolute',
                     top: line.top,
                     left: line.left,
-                    transform: `scale(${line.scale})`,
+                    transform: `scale(${line.scale}) skewX(${line.skewX})`,
                     opacity: line.opacity,
-                    textShadow: '2px 0px #ff0000, -2px 0px #00ffff'
+                    textShadow: '3px 0px #ff0000, -3px 0px #00ffff'
                   }}
                   className="text-red-500 font-black text-sm uppercase tracking-widest whitespace-nowrap bg-black/40 px-2 border border-red-500/20"
                 >
@@ -500,7 +505,7 @@ export default function InvitationApp() {
                 <div className="absolute top-4 right-4 text-red-400/30 font-mono text-[9px]">//SECURE_08</div>
                 <div className="absolute bottom-4 left-8 text-red-400/30 font-mono text-[9px]">PBB_2026//</div>
                 <div className="text-center border-2 border-double border-red-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px]">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-red-600 to-red-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-500/40">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-red-600 to-red-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-300/40">
                     <FolderOpen size={22} className="text-zinc-950" />
                   </div>
                   <h2 className="text-red-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
@@ -541,16 +546,16 @@ export default function InvitationApp() {
                 <div className="flex-1 w-full max-w-6xl mx-auto flex items-center justify-center px-4">
                   <div className="grid grid-cols-2 gap-12 items-center justify-center w-full">
                     
-                    {/* LEFT CONTAINER LAYER: Dynamic User Card Sized Exactly to 3.5 Ratio Aspect, Expanded Max Width */}
+                    {/* LEFT CONTAINER LAYER: Sized Exactly to 3.5 Ratio Aspect, Expanded Max Width, added rounded-xl border curving */}
                     <div className="w-full flex justify-end">
                       <img 
                         src={displayedImageUrl} 
                         alt="User Profile Display" 
-                        className="w-full max-w-[430px] aspect-[3.5/5] object-cover rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.85)] border-0"
+                        className="w-full max-w-[430px] aspect-[3.5/5] object-cover rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] border-0"
                       />
                     </div>
 
-                    {/* RIGHT CONTAINER LAYER: Stacked Typography and Native Raw QR Element Retaining Exact Proportions */}
+                    {/* RIGHT CONTAINER LAYER: Stacked Typography and Native Raw QR Element Retaining Exact Proportions, added rounded-xl curving */}
                     <div className="w-full flex flex-col items-center justify-start text-center">
                       <span className="text-white text-sm font-black tracking-[0.3em] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,1)] mb-4">
                         TAKE A PHOTO
@@ -559,7 +564,7 @@ export default function InvitationApp() {
                       <img 
                         src={pbbQR} 
                         alt="pbbQR Code Asset" 
-                        className="w-64 h-64 object-contain shadow-[0_20px_50px_rgba(0,0,0,0.85)] bg-transparent rounded-none"
+                        className="w-64 h-64 object-contain shadow-[0_20px_50px_rgba(0,0,0,0.85)] bg-transparent rounded-xl"
                       />
 
                       <span className="text-zinc-200 text-[11px] font-black tracking-[0.15em] max-w-[280px] uppercase leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,1)] mt-6">
