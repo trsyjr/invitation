@@ -25,6 +25,7 @@ import lj from '../assets/Lj.png';
 import jops from '../assets/Jops.png';
 import edd from '../assets/Edd.png';
 import sy from '../assets/Sy.png';
+import pbbQR from '../assets/pbbQR.png'; 
 
 export default function InvitationApp() {
   const [stage, setStage] = useState('hacked');
@@ -164,82 +165,31 @@ export default function InvitationApp() {
     return () => { cancelAnimationFrame(animationFrameId); window.removeEventListener('resize', handleResize); };
   }, [stage]);
 
-  // CRUNCHY RETRO TELEVISION STATIC ENGINE
-  useEffect(() => {
-    const isStaticState = stage === 'staticAfterFlash';
-    if (!isStaticState) return;
-
-    const canvas = staticCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    let animationFrameId;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const bufferCanvas = document.createElement('canvas');
-    bufferCanvas.width = 320;
-    bufferCanvas.height = 180;
-    const bufferCtx = bufferCanvas.getContext('2d');
-    const bufferData = bufferCtx.createImageData(bufferCanvas.width, bufferCanvas.height);
-    const data = bufferData.data;
-
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-
-    const renderTVStatic = () => {
-      const scanlineOffset = Date.now() * 0.08;
-
-      for (let i = 0; i < data.length; i += 4) {
-        const noise = Math.random() > 0.5 ? 255 : 0;
-
-        data[i] = noise;
-        data[i + 1] = noise;
-        data[i + 2] = noise;
-        data[i + 3] = 255;
-      }
-
-      bufferCtx.putImageData(bufferData, 0, 0);
-
-      ctx.clearRect(0, 0, width, height);
-
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(bufferCanvas, 0, 0, width, height);
-
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      for (let y = 0; y < height; y += 3) {
-        ctx.fillRect(0, y, width, 1);
-      }
-
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
-      ctx.fillRect(0, scanlineOffset % height, width, 14);
-
-      if (Math.random() > 0.92) {
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.fillRect(0, Math.random() * height, width, Math.random() * 8);
-      }
-
-      animationFrameId = requestAnimationFrame(renderTVStatic);
-    };
-    renderTVStatic();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [stage]);
-
   const handleVideo1End = () => {
     if (video1Ref.current) video1Ref.current.pause();
     setStage('invitedText'); 
   };
 
-  const handleVideo2End = () => {
-    if (video2Ref.current) video2Ref.current.pause();
-    setStage('staticLastBlink');
+  // Monitor Video 2 run time to pause it and reveal elements before it ends
+  useEffect(() => {
+    if (stage !== 'video2') return;
+
+    const checkTime = setInterval(() => {
+      const video = video2Ref.current;
+      if (video) {
+        if (video.duration && video.currentTime >= video.duration - 0.5) {
+          video.pause();
+          clearInterval(checkTime);
+          setStage('envelope'); 
+        }
+      }
+    }, 30);
+
+    return () => clearInterval(checkTime);
+  }, [stage]);
+
+  const handleJoinClick = () => {
+    setStage('blackout');
   };
 
   const handleSubmit = (e) => {
@@ -267,12 +217,12 @@ export default function InvitationApp() {
 
   const invitationCardVariants = {
     hidden: { 
-      scale: 0.6,
+      scale: 0.4,
       opacity: 0,
       zIndex: 15
     },
     visible: {
-      scale: 1.80, 
+      scale: 3.5, 
       opacity: 1,
       zIndex: 50, 
       transition: { 
@@ -291,8 +241,8 @@ export default function InvitationApp() {
         <canvas ref={introCanvasRef} className="absolute inset-0 w-full h-full block z-0" />
       )}
 
-      {/* Background Video Layer */}
-      {['video1', 'invitedText', 'envelope', 'blinding', 'staticAfterFlash'].includes(stage) && (
+      {/* Background Video Layer 1 */}
+      {['video1', 'invitedText'].includes(stage) && (
         <div className="absolute inset-0 z-10 bg-black w-full h-full">
           <video
             ref={video1Ref}
@@ -303,7 +253,55 @@ export default function InvitationApp() {
             onEnded={handleVideo1End}
             className="w-full h-full object-cover"
           />
-          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${['envelope', 'invitedText'].includes(stage) ? 'backdrop-blur-md bg-black/60' : 'backdrop-blur-none bg-transparent'}`} />
+          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${stage === 'invitedText' ? 'backdrop-blur-md bg-black/60' : 'backdrop-blur-none bg-transparent'}`} />
+        </div>
+      )}
+
+      {/* Background Video Layer 2 Persistent Stage */}
+      {['video2', 'envelope'].includes(stage) && (
+        <div className="absolute inset-0 z-10 bg-black w-full h-full overflow-hidden">
+          <video
+            ref={video2Ref}
+            src={wake} 
+            autoPlay
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          />
+
+          {/* Eyelids configuring natural blinks */}
+          {stage === 'video2' && (
+            <div className="absolute inset-0 z-55 pointer-events-none flex flex-col justify-between">
+              <motion.div 
+                className="w-full bg-black border-b border-blue-500/20 origin-top shadow-[0_15px_35px_rgba(0,0,0,0.98)]"
+                animate={{ 
+                  height: [
+                    "0%", "100%", "0%", "100%", "0%"
+                  ] 
+                }}
+                transition={{ 
+                  duration: 5.0, 
+                  repeat: 0, 
+                  times: [0, 0.25, 0.48, 0.75, 1.0], 
+                  ease: [0.42, 0, 0.58, 1] 
+                }}
+              />
+              <motion.div 
+                className="w-full bg-black border-t border-blue-500/20 origin-bottom shadow-[0_-15px_35px_rgba(0,0,0,0.98)]"
+                animate={{ 
+                  height: [
+                    "0%", "100%", "0%", "100%", "0%"
+                  ] 
+                }}
+                transition={{ 
+                  duration: 5.0, 
+                  repeat: 0, 
+                  times: [0, 0.25, 0.48, 0.75, 1.0], 
+                  ease: [0.42, 0, 0.58, 1] 
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -402,7 +400,7 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* INTERSTITIAL: "YOU ARE INVITED!" TEXT DISPLAY */}
+        {/* INTERSTITIAL: "YOU ARE INVITED!" */}
         {stage === 'invitedText' && (
           <motion.div
             key="invited-text-stage"
@@ -414,19 +412,40 @@ export default function InvitationApp() {
               animate: { duration: 0.8, ease: "easeOut" },
               exit: { duration: 0.6, ease: "easeInOut" }
             }}
-            onAnimationComplete={() => {
-              setTimeout(() => setStage('envelope'), 2200);
-            }}
-            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-transparent p-4"
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-transparent p-4 gap-8"
           >
-            <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] uppercase text-blue-400 text-center drop-shadow-[0_0_35px_rgba(59,130,246,0.6)] font-mono animate-pulse">
-              YOU ARE INVITED!
-            </h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mt-6 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
+            <div className="flex flex-col items-center justify-center">
+              <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] uppercase text-blue-400 text-center drop-shadow-[0_0_35px_rgba(59,130,246,0.6)] font-mono animate-pulse">
+                YOU ARE INVITED!
+              </h1>
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mt-6 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(59,130,246,0.6)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleJoinClick}
+              className="px-12 py-4 bg-blue-950 hover:bg-blue-900 text-blue-400 border-2 border-blue-500 rounded-lg font-black uppercase tracking-[0.25em] text-sm shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-colors duration-200"
+            >
+              Join
+            </motion.button>
           </motion.div>
         )}
 
-        {/* PHASE 3: SIDEWAY BOOK FOLDER WITH FULL-BLEED MASSIVE INVITATION DISPLAY */}
+        {/* BLACKOUT SEQUENCE */}
+        {stage === 'blackout' && (
+          <motion.div
+            key="blackout-stage"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            onAnimationComplete={() => setStage('video2')}
+            className="absolute inset-0 z-55 bg-black w-full h-full"
+          />
+        )}
+
+        {/* PHASE 3: OPENING ENVELOPE / FLOATING ELEMENTS */}
         {stage === 'envelope' && (
           <div className="absolute inset-0 z-40 flex items-center justify-center p-4 bg-transparent perspective-[1500px]">
             <motion.div
@@ -446,7 +465,7 @@ export default function InvitationApp() {
                 <div className="absolute bottom-0 inset-x-0 h-1/3 bg-zinc-900/90 border-t-2 border-dashed border-blue-600/20" />
               </div>
 
-              {/* MASSIVE FULL-BLEED INVITATION CARD */}
+              {/* FLOATING SCALED OVERSIZE GRID VIEWPORTS */}
               <div className="absolute inset-0 flex justify-center items-center overflow-visible z-45 pointer-events-none">
                 <motion.div
                   variants={invitationCardVariants}
@@ -454,24 +473,41 @@ export default function InvitationApp() {
                   animate={isFolderOpened ? "visible" : "hidden"}
                   onAnimationComplete={() => { 
                     if (isFolderOpened) {
-                      setTimeout(() => setStage('blinding'), 8500); 
+                      setTimeout(() => setStage('tvTurnedOff'), 12000); 
                     }
                   }}
-                  className="w-[94%] h-[445px] bg-zinc-950 rounded-lg shadow-[0_45px_100px_rgba(0,0,0,0.95)] border border-zinc-800 flex flex-col overflow-hidden pointer-events-auto relative"
+                  className="w-[92vw] max-w-6xl grid grid-cols-2 gap-8 items-center justify-center pointer-events-auto relative bg-transparent"
                 >
-                  {/* FULL IMAGE BACKGROUND IMMERSION FRAME */}
-                  <div className="w-full h-full absolute inset-0 z-10 bg-black">
+                  {/* LEFT ELEMENT: Enlarged Vertical Profile Invitation Card */}
+                  <div className="w-full flex justify-end pr-2">
                     <img 
                       src={displayedImageUrl} 
-                      alt="Full Scale Invitation Layer" 
-                      className="w-full h-full object-cover object-top"
+                      alt="User Profile Display" 
+                      className="w-full max-w-[180px] aspect-[3/4.2] object-cover rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/10"
                     />
                   </div>
 
-                  {/* MINIMAL OVERLAY LOG LABEL AT THE BASE FOR METRICS */}
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-8 pb-1.5 px-2 text-[5px] text-zinc-400 font-mono uppercase tracking-widest z-20 pointer-events-none flex justify-between items-end">
-                    <span className="opacity-60">CBD-PLDS PBB 2026</span>
-                    <span className="opacity-70 truncate max-w-[120px] text-right">SIG: {email}</span>
+                  {/* RIGHT ELEMENT: Enlarged QR Display Stack with Typography Labels */}
+                  <div className="w-full flex flex-col items-center justify-center gap-3 pl-2">
+                    <span className="text-white text-[7px] font-black tracking-[0.25em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      TAKE A PHOTO
+                    </span>
+                    
+                    <img 
+                      src={pbbQR} 
+                      alt="pbbQR Code Asset" 
+                      className="w-28 h-28 object-contain rounded-xl bg-white p-2 shadow-[0_25px_60px_rgba(0,0,0,0.85)]"
+                    />
+
+                    <span className="text-zinc-300 text-[5px] font-bold tracking-[0.12em] text-center max-w-[150px] uppercase leading-normal drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      CONTRIBUTION WILL BE ANNOUNCED SOON
+                    </span>
+                  </div>
+
+                  {/* BOTTOM FOOTER OVERLAY */}
+                  <div className="absolute -bottom-10 inset-x-0 pt-1 pb-1 px-2 text-[3px] text-zinc-400 font-mono uppercase tracking-widest z-20 pointer-events-none flex justify-between items-end">
+                    <span className="opacity-50">CBD-PLDS PBB 2026</span>
+                    <span className="opacity-60 truncate max-w-[90px] text-right">SIG: {email}</span>
                   </div>
                 </motion.div>
               </div>
@@ -509,100 +545,10 @@ export default function InvitationApp() {
           </div>
         )}
 
-        {/* PHASE 4: BLACKOUT FLASHBANG */}
-        {stage === 'blinding' && (
+        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE */}
+        {stage === 'tvTurnedOff' && (
           <motion.div
-            key="blinding-stage"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 1 }}
-            transition={{ duration: 2.2 }}
-            onAnimationComplete={() => setStage('staticAfterFlash')}
-            className="absolute inset-0 z-55 bg-black"
-          />
-        )}
-
-        {/* INTERSTITIAL TV NOISE 1 */}
-        {stage === 'staticAfterFlash' && (
-          <motion.div
-            key="static-after-flash"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-55 bg-zinc-950 w-full h-full"
-            onAnimationComplete={() => {
-              setTimeout(() => setStage('video2'), 1200);
-            }}
-          >
-            <canvas ref={staticCanvasRef} className="absolute inset-0 w-full h-full block z-55" />
-          </motion.div>
-        )}
-
-        {/* PHASE 5: POV EYE BLINKING VIDEO & POWER-OFF DISINTEGRATION (2 SLOW NATURAL BLINKS) */}
-        {stage === 'video2' && (
-          <motion.div
-            key="video2-stage"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-black w-full h-full overflow-hidden"
-          >
-            <video
-              ref={video2Ref}
-              src={wake} 
-              autoPlay
-              muted
-              playsInline
-              onEnded={handleVideo2End}
-              className="w-full h-full object-cover"
-            />
-
-            {/* Eyelids configured to trigger exactly 2 slow, heavy, realistic natural blinks */}
-            <div className="absolute inset-0 z-55 pointer-events-none flex flex-col justify-between">
-              <motion.div 
-                className="w-full bg-black border-b border-blue-500/20 origin-top shadow-[0_15px_35px_rgba(0,0,0,0.98)]"
-                animate={{ 
-                  height: [
-                    "0%",     // Awake / Eyes open
-                    "100%",   // Slow Close 1
-                    "0%",     // Slow Open 1
-                    "100%",   // Slow Close 2
-                    "0%"      // Final Open
-                  ] 
-                }}
-                transition={{ 
-                  duration: 5.0, // Stretched timeline over 5 seconds for a heavier, slower appearance
-                  repeat: 0, 
-                  times: [0, 0.25, 0.48, 0.75, 1.0], 
-                  ease: [0.42, 0, 0.58, 1] // Custom ease curve mirroring anatomical acceleration/deceleration
-                }}
-              />
-              <motion.div 
-                className="w-full bg-black border-t border-blue-500/20 origin-bottom shadow-[0_-15px_35px_rgba(0,0,0,0.98)]"
-                animate={{ 
-                  height: [
-                    "0%",   
-                    "100%", 
-                    "0%",   
-                    "100%", 
-                    "0%"    
-                  ] 
-                }}
-                transition={{ 
-                  duration: 5.0, 
-                  repeat: 0, 
-                  times: [0, 0.25, 0.48, 0.75, 1.0], 
-                  ease: [0.42, 0, 0.58, 1] 
-                }}
-              />
-            </div>
-          </motion.div>
-        )}
-
-        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE (CLOSES IN EXACTLY 5 SECONDS) */}
-        {stage === 'staticLastBlink' && (
-          <motion.div
-            key="static-last-blink"
+            key="tv-turned-off-stage"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             className="absolute inset-0 z-55 bg-black w-full h-full flex items-center justify-center"
