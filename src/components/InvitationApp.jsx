@@ -1,10 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Activity, ShieldAlert, Cpu, EyeOff, FolderOpen, Mail } from 'lucide-react';
+import { Terminal, Activity, ShieldAlert, Cpu, EyeOff, FolderOpen } from 'lucide-react';
 
 import pbbVideo from '../assets/PBB 2026.mp4'; 
 import wake from '../assets/Wake.mp4';
 import jes from '../assets/JesPBB.png';
+import mina from '../assets/Mina.png';
+import perrine from '../assets/Perrine.png';
+import merl from '../assets/Merl.png';
+import aki from '../assets/Aki.png';
+import kleng from '../assets/Kleng.png';
+import jena from '../assets/Jena.png';
+import thea from '../assets/Althea.png';
+import noreen from '../assets/Noreen.png';
+import nancy from '../assets/Nancy.png';
+import jo from '../assets/Jo.png';
+import ocampo from '../assets/O.png';
+import aljohn from '../assets/Aljohn.png';
+import meann from '../assets/Meann.png';
+import pao from '../assets/Pao.png';
+import nic from '../assets/Nic.png';
+import dc from '../assets/DC.png';
+import lj from '../assets/Lj.png';
+import jops from '../assets/Jops.png';
+import edd from '../assets/Edd.png';
+import sy from '../assets/Sy.png';
 
 export default function InvitationApp() {
   const [stage, setStage] = useState('hacked');
@@ -15,8 +35,27 @@ export default function InvitationApp() {
   const [isFolderOpened, setIsFolderOpened] = useState(false);
 
   const emailImageMap = {
-    'trsyjr@dswd.gov.ph': '/path/to/image1.png',
+    'trsyjr@dswd.gov.ph': sy,
     'jsmencias@dswd.gov.ph': jes,
+    'callanto@dswd.gov.ph' : mina,
+    'pdpadilla@dswd.gov.ph' : perrine,
+    'mopalacio@dswd.gov.ph' : merl,
+    'merffernandez@dswd.gov.ph' : aki,
+    'kmeflores@dswd.gov.ph' : kleng,
+    'jmcaguilar@dswd.gov.ph' : jena,
+    'amlpineda@dswd.gov.ph' : thea,
+    'nndata@dswd.gov.ph' : noreen,
+    'nefortes@dswd.gov.ph' : nancy,
+    'jmedillo@dswd.gov.ph' : jo,
+    'obocampo@dswd.gov.ph' : ocampo,
+    'acpurca@dswd.gov.ph' : aljohn,
+    'matdealo@dswd.gov.ph' : meann,
+    'jpmleyva@dswd.gov.ph' : pao,
+    'cnddorado@dswd.gov.ph' : nic,
+    'ejsconsulta@dswd.gov.ph' : dc,
+    'ljrfrancisco@dswd.gov.ph' : lj,
+    'jtmpacao@dswd.gov.ph' : jops,
+    'epipapa@dswd.gov.ph' : edd,
   };
 
   const video1Ref = useRef(null);
@@ -33,34 +72,6 @@ export default function InvitationApp() {
   ];
 
   const codeSnippets = ['01', '10', '0xFA', 'SYS_INIT', 'LINK_START', 'OVERRIDE', 'NULL', 'ROOT_ACCESS', 'DATA_VORTEX', '404', 'NaN', 'µS'];
-
-  // AGGRESSIVE HYPER-SPEED SCATTER TRAJECTORY ARRAYS
-  const floatingEnvelopes = Array.from({ length: 16 }).map((_, i) => {
-    const trajectory = i % 4;
-    let startX, startY, endX, endY;
-
-    if (trajectory === 0) { // Fast Left to Right Wide Out
-      startX = -40; startY = Math.random() * 120 - 10;
-      endX = 140; endY = startY + (Math.random() * 40 - 20);
-    } else if (trajectory === 1) { // Fast Right to Left Wide Out
-      startX = 140; startY = Math.random() * 120 - 10;
-      endX = -40; endY = startY + (Math.random() * 40 - 20);
-    } else if (trajectory === 2) { // Violent Downward Scatter
-      startX = Math.random() * 140 - 20; startY = -40;
-      endX = startX + (Math.random() * 60 - 30); endY = 140;
-    } else { // Violent Upward Scatter
-      startX = Math.random() * 140 - 20; startY = 140;
-      endX = startX + (Math.random() * 60 - 30); endY = -40;
-    }
-
-    return {
-      id: i,
-      size: Math.random() * 30 + 60, 
-      startX, startY, endX, endY,
-      duration: Math.random() * 1.0 + 1.2, // Ultra-fast chaotic speeds (1.2s - 2.2s)
-      delay: Math.random() * -4
-    };
-  });
 
   // PHASE 1: Terminal Typewriter Effect
   useEffect(() => {
@@ -223,7 +234,7 @@ export default function InvitationApp() {
 
   const handleVideo1End = () => {
     if (video1Ref.current) video1Ref.current.pause();
-    setStage('envelope');
+    setStage('invitedText'); 
   };
 
   const handleVideo2End = () => {
@@ -238,13 +249,12 @@ export default function InvitationApp() {
     const lowerCaseEmail = email.toLowerCase().trim(); 
     if (emailImageMap[lowerCaseEmail]) {
       setDisplayedImageUrl(emailImageMap[lowerCaseEmail]);
-      setStage('video1'); 
+      setStage('whiteFlash'); 
     } else {
       alert('Node mismatch. Invalid user signature identified.');
     }
   };
 
-  // Folder Floating Entrance Animation
   const folderContainerVariants = {
     hidden: { scale: 0.8, y: 120, opacity: 0 },
     visible: {
@@ -255,7 +265,6 @@ export default function InvitationApp() {
     }
   };
 
-  // MAXIMUM SCALE BLOCK FOR FULL SCREEN PRESENCE
   const invitationCardVariants = {
     hidden: { 
       scale: 0.6,
@@ -263,7 +272,7 @@ export default function InvitationApp() {
       zIndex: 15
     },
     visible: {
-      scale: 1.80, // Massive full scale bump up
+      scale: 1.80, 
       opacity: 1,
       zIndex: 50, 
       transition: { 
@@ -283,7 +292,7 @@ export default function InvitationApp() {
       )}
 
       {/* Background Video Layer */}
-      {['video1', 'envelope', 'blinding', 'staticAfterFlash'].includes(stage) && (
+      {['video1', 'invitedText', 'envelope', 'blinding', 'staticAfterFlash'].includes(stage) && (
         <div className="absolute inset-0 z-10 bg-black w-full h-full">
           <video
             ref={video1Ref}
@@ -294,39 +303,26 @@ export default function InvitationApp() {
             onEnded={handleVideo1End}
             className="w-full h-full object-cover"
           />
-          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${stage === 'envelope' ? 'backdrop-blur-md bg-black/60' : 'backdrop-blur-none bg-transparent'}`} />
-        </div>
-      )}
-
-      {/* HIGH VELOCITY RAMPAGE SCATTER ENVELOPES */}
-      {stage === 'envelope' && (
-        <div className="absolute inset-0 w-full h-full z-35 pointer-events-none overflow-hidden">
-          {floatingEnvelopes.map((env, idx) => (
-            <motion.div
-              key={env.id}
-              initial={{ x: `${env.startX}vw`, y: `${env.startY}vh`, opacity: 0, rotate: 0 }}
-              animate={{
-                x: `${env.endX}vw`,
-                y: `${env.endY}vh`,
-                rotate: [0, idx % 2 === 0 ? 1080 : -1080], // Aggressive spin rate
-                opacity: [0, 1, 1, 0]
-              }}
-              transition={{
-                duration: env.duration,
-                delay: env.delay,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              style={{ width: env.size, height: env.size }}
-              className="absolute text-yellow-400 drop-shadow-[0_12px_30px_rgba(234,179,8,0.7)] flex items-center justify-center"
-            >
-              <Mail className="w-full h-full" strokeWidth={1.0} />
-            </motion.div>
-          ))}
+          <div className={`absolute inset-0 transition-all duration-1000 pointer-events-none ${['envelope', 'invitedText'].includes(stage) ? 'backdrop-blur-md bg-black/60' : 'backdrop-blur-none bg-transparent'}`} />
         </div>
       )}
 
       <AnimatePresence mode="wait">
+
+        {/* POST-EMAIL WHITE FLASH SCREEN */}
+        {stage === 'whiteFlash' && (
+          <motion.div
+            key="white-flash-stage"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            onAnimationComplete={() => {
+              setTimeout(() => setStage('video1'), 800);
+            }}
+            className="absolute inset-0 z-55 bg-white w-full h-full"
+          />
+        )}
         
         {/* PHASE 1: LOG ENTRY INTRO */}
         {stage === 'hacked' && (
@@ -394,7 +390,7 @@ export default function InvitationApp() {
                   />
                 </div>
                 <motion.button
-                  whileHover={{ scale: 1.01, boxShadow: "0 0 20px rgba(239, 68, 68, 0.4)" }}
+                  whileHover={{ scale: 1.01, boxShadow: "0 0 20px rgba(239,68,68,0.4)" }}
                   whileTap={{ scale: 0.99 }}
                   type="submit"
                   className="w-full py-3.5 bg-red-950 hover:bg-red-900 text-red-400 border border-red-500/60 font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 text-xs"
@@ -406,9 +402,31 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* ========================================================================= */}
-        {/* PHASE 3: SIDEWAY BOOK FOLDER WITH FULL-BLEED MASSIVE INVITATION DISPLAY   */}
-        {/* ========================================================================= */}
+        {/* INTERSTITIAL: "YOU ARE INVITED!" TEXT DISPLAY */}
+        {stage === 'invitedText' && (
+          <motion.div
+            key="invited-text-stage"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(8px)" }}
+            transition={{ 
+              initial: { duration: 0.6 },
+              animate: { duration: 0.8, ease: "easeOut" },
+              exit: { duration: 0.6, ease: "easeInOut" }
+            }}
+            onAnimationComplete={() => {
+              setTimeout(() => setStage('envelope'), 2200);
+            }}
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-transparent p-4"
+          >
+            <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] uppercase text-blue-400 text-center drop-shadow-[0_0_35px_rgba(59,130,246,0.6)] font-mono animate-pulse">
+              YOU ARE INVITED!
+            </h1>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mt-6 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
+          </motion.div>
+        )}
+
+        {/* PHASE 3: SIDEWAY BOOK FOLDER WITH FULL-BLEED MASSIVE INVITATION DISPLAY */}
         {stage === 'envelope' && (
           <div className="absolute inset-0 z-40 flex items-center justify-center p-4 bg-transparent perspective-[1500px]">
             <motion.div
@@ -423,9 +441,9 @@ export default function InvitationApp() {
             >
               
               {/* BACK PORTRAIT FOLDER BASEPLATE */}
-              <div className="absolute inset-0 bg-gradient-to-b from-amber-800 via-amber-900 to-zinc-950 rounded-2xl z-10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] border-2 border-amber-600/30 overflow-hidden">
-                <div className="absolute inset-y-0 left-0 w-5 bg-black/40 border-r border-amber-500/10" />
-                <div className="absolute bottom-0 inset-x-0 h-1/3 bg-zinc-900/90 border-t-2 border-dashed border-amber-600/20" />
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-800 via-blue-950 to-zinc-950 rounded-2xl z-10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] border-2 border-blue-600/30 overflow-hidden">
+                <div className="absolute inset-y-0 left-0 w-5 bg-black/40 border-r border-blue-500/10" />
+                <div className="absolute bottom-0 inset-x-0 h-1/3 bg-zinc-900/90 border-t-2 border-dashed border-blue-600/20" />
               </div>
 
               {/* MASSIVE FULL-BLEED INVITATION CARD */}
@@ -458,30 +476,30 @@ export default function InvitationApp() {
                 </motion.div>
               </div>
 
-              {/* FRONT COVER FOLDER PANEL (BOOK SIDEWAYS ACTION) */}
+              {/* FRONT COVER FOLDER PANEL */}
               <motion.div
                 style={{ originX: "0%", transformStyle: "preserve-3d" }}
                 initial={{ rotateY: 0, zIndex: 25, opacity: 1 }}
                 animate={isFolderOpened ? { rotateY: -140, opacity: 0.05, filter: "blur(2px)", x: -20 } : { rotateY: 0, opacity: 1, x: 0 }}
                 transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
-                className="absolute inset-0 bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 rounded-2xl border-2 border-amber-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center p-6 backface-hidden"
+                className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 rounded-2xl border-2 border-blue-500/40 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center p-6 backface-hidden"
               >
-                <div className="absolute inset-y-0 left-0 w-4 bg-amber-800/90 rounded-l-2xl border-r border-amber-900/60" />
-                <div className="absolute top-4 right-4 text-amber-400/30 font-mono text-[9px]">//SECURE_08</div>
-                <div className="absolute bottom-4 left-8 text-amber-400/30 font-mono text-[9px]">PBB_2026//</div>
+                <div className="absolute inset-y-0 left-0 w-4 bg-blue-800/90 rounded-l-2xl border-r border-blue-900/60" />
+                <div className="absolute top-4 right-4 text-blue-400/30 font-mono text-[9px]">//SECURE_08</div>
+                <div className="absolute bottom-4 left-8 text-blue-400/30 font-mono text-[9px]">PBB_2026//</div>
 
-                <div className="text-center border-2 border-double border-amber-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px] ml-2">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-300/40">
+                <div className="text-center border-2 border-double border-blue-900/60 rounded-xl py-10 px-5 bg-zinc-950/40 shadow-2xl backdrop-blur-md w-full max-w-[240px] ml-2">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-300/40">
                     <FolderOpen size={22} className="text-zinc-950" />
                   </div>
-                  <h2 className="text-amber-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
+                  <h2 className="text-blue-100 font-black font-mono text-sm tracking-[0.25em] uppercase leading-tight mb-1">
                     CLASSIFIED DOCS
                   </h2>
-                  <p className="text-amber-500/80 font-mono text-[9px] uppercase tracking-widest">
+                  <p className="text-blue-400/80 font-mono text-[9px] uppercase tracking-widest">
                     CASE FILE: CONFIDENTIAL
                   </p>
-                  <div className="w-12 h-0.5 bg-amber-500/30 mx-auto my-4" />
-                  <p className="text-amber-400 font-bold font-mono text-[10px] tracking-widest uppercase animate-pulse">
+                  <div className="w-12 h-0.5 bg-blue-500/30 mx-auto my-4" />
+                  <p className="text-blue-400 font-bold font-mono text-[10px] tracking-widest uppercase animate-pulse">
                     TAP TO OPEN
                   </p>
                 </div>
@@ -490,9 +508,8 @@ export default function InvitationApp() {
             </motion.div>
           </div>
         )}
-        {/* ========================================================================= */}
 
-        {/* PHASE 4: BLINDING FLASHBANG */}
+        {/* PHASE 4: BLACKOUT FLASHBANG */}
         {stage === 'blinding' && (
           <motion.div
             key="blinding-stage"
@@ -501,7 +518,7 @@ export default function InvitationApp() {
             exit={{ opacity: 1 }}
             transition={{ duration: 2.2 }}
             onAnimationComplete={() => setStage('staticAfterFlash')}
-            className="absolute inset-0 z-55 bg-white"
+            className="absolute inset-0 z-55 bg-black"
           />
         )}
 
@@ -521,7 +538,7 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* PHASE 5: POV EYE BLINKING VIDEO & POWER-OFF DESTRUCTION ENGINE */}
+        {/* PHASE 5: POV EYE BLINKING VIDEO & POWER-OFF DISINTEGRATION (2 SLOW NATURAL BLINKS) */}
         {stage === 'video2' && (
           <motion.div
             key="video2-stage"
@@ -540,22 +557,49 @@ export default function InvitationApp() {
               className="w-full h-full object-cover"
             />
 
+            {/* Eyelids configured to trigger exactly 2 slow, heavy, realistic natural blinks */}
             <div className="absolute inset-0 z-55 pointer-events-none flex flex-col justify-between">
               <motion.div 
-                className="w-full bg-black border-b border-red-600/30 origin-top shadow-[0_10px_30px_rgba(0,0,0,0.95)]"
-                animate={{ height: ["0%", "20%", "65%", "0%", "15%", "55%", "0%"] }}
-                transition={{ duration: 3.5, repeat: Infinity, times: [0, 0.1, 0.18, 0.28, 0.55, 0.63, 0.75], ease: "easeInOut" }}
+                className="w-full bg-black border-b border-blue-500/20 origin-top shadow-[0_15px_35px_rgba(0,0,0,0.98)]"
+                animate={{ 
+                  height: [
+                    "0%",     // Awake / Eyes open
+                    "100%",   // Slow Close 1
+                    "0%",     // Slow Open 1
+                    "100%",   // Slow Close 2
+                    "0%"      // Final Open
+                  ] 
+                }}
+                transition={{ 
+                  duration: 5.0, // Stretched timeline over 5 seconds for a heavier, slower appearance
+                  repeat: 0, 
+                  times: [0, 0.25, 0.48, 0.75, 1.0], 
+                  ease: [0.42, 0, 0.58, 1] // Custom ease curve mirroring anatomical acceleration/deceleration
+                }}
               />
               <motion.div 
-                className="w-full bg-black border-t border-red-600/30 origin-bottom shadow-[0_-10px_30px_rgba(0,0,0,0.95)]"
-                animate={{ height: ["0%", "20%", "65%", "0%", "15%", "55%", "0%"] }}
-                transition={{ duration: 3.5, repeat: Infinity, times: [0, 0.1, 0.18, 0.28, 0.55, 0.63, 0.75], ease: "easeInOut" }}
+                className="w-full bg-black border-t border-blue-500/20 origin-bottom shadow-[0_-15px_35px_rgba(0,0,0,0.98)]"
+                animate={{ 
+                  height: [
+                    "0%",   
+                    "100%", 
+                    "0%",   
+                    "100%", 
+                    "0%"    
+                  ] 
+                }}
+                transition={{ 
+                  duration: 5.0, 
+                  repeat: 0, 
+                  times: [0, 0.25, 0.48, 0.75, 1.0], 
+                  ease: [0.42, 0, 0.58, 1] 
+                }}
               />
             </div>
           </motion.div>
         )}
 
-        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE */}
+        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE (CLOSES IN EXACTLY 5 SECONDS) */}
         {stage === 'staticLastBlink' && (
           <motion.div
             key="static-last-blink"
@@ -566,7 +610,7 @@ export default function InvitationApp() {
               setTimeout(() => {
                 window.close();
                 setTimeout(() => { window.location.replace('about:blank'); }, 100);
-              }, 1200); 
+              }, 5000); 
             }}
           >
             <motion.div 
