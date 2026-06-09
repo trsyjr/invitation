@@ -424,17 +424,17 @@ export default function InvitationApp() {
             className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-transparent p-4 gap-8"
           >
             <div className="flex flex-col items-center justify-center">
-              <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] uppercase text-blue-400 text-center drop-shadow-[0_0_35px_rgba(59,130,246,0.6)] font-mono animate-pulse">
+              <h1 className="text-4xl md:text-6xl font-black tracking-[0.3em] uppercase text-red-400 text-center drop-shadow-[0_0_35px_rgba(59,130,246,0.6)] font-mono animate-pulse">
                 YOU ARE INVITED!
               </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent mt-6 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent mt-6 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(59,130,246,0.6)" }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(239, 68, 68, 0.6)" }}
               whileTap={{ scale: 0.95 }}
               onClick={handleJoinClick}
-              className="px-12 py-4 bg-blue-950 hover:bg-blue-900 text-blue-400 border-2 border-blue-500 rounded-lg font-black uppercase tracking-[0.25em] text-sm shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-colors duration-200"
+              className="px-12 py-4 bg-red-950 hover:bg-red-900 text-red-400 border-2 border-red-500 rounded-lg font-black uppercase tracking-[0.25em] text-sm shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-colors duration-200"
             >
               Join
             </motion.button>
