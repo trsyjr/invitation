@@ -26,6 +26,9 @@ import lj from '../assets/Lj.png';
 import jops from '../assets/Jops.png';
 import edd from '../assets/Edd.png';
 import sy from '../assets/Sy.png';
+import angel from '../assets/Angel.png';
+import cla from '../assets/mcdraquinel.png';
+import lyka from '../assets/nlglermino.png';
 import pbbQR from '../assets/pbbQR.png'; 
 
 export default function InvitationApp() {
@@ -59,6 +62,9 @@ export default function InvitationApp() {
     'ljrfrancisco@dswd.gov.ph' : lj,
     'jtmpacao@dswd.gov.ph' : jops,
     'epipapa@dswd.gov.ph' : edd,
+    'mamalapira@dswd.gov.ph' : angel,
+    'nlglermino@dswd.gov.ph' : lyka,
+    'mcdraquinel@dswd.gov.ph' : cla,
   };
 
   const video1Ref = useRef(null);
