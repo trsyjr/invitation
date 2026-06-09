@@ -4,6 +4,7 @@ import { Terminal, Activity, ShieldAlert, Cpu, EyeOff, FolderOpen } from 'lucide
 
 import pbbVideo from '../assets/PBB 2026.mp4'; 
 import wake from '../assets/Wake.mp4';
+import Music from '../assets/PBBMusic.mp3'; 
 import jes from '../assets/JesPBB.png';
 import mina from '../assets/Mina.png';
 import perrine from '../assets/Perrine.png';
@@ -63,6 +64,7 @@ export default function InvitationApp() {
   const video1Ref = useRef(null);
   const video2Ref = useRef(null);
   const introCanvasRef = useRef(null);
+  const audioRef = useRef(null); 
 
   const hackLogs = [
     ">> INITIALIZING NEURAL LINK START PROBE...",
@@ -73,6 +75,22 @@ export default function InvitationApp() {
   ];
 
   const codeSnippets = ['01', '10', '0xFA', 'SYS_INIT', 'LINK_START', 'OVERRIDE', 'NULL', 'ROOT_ACCESS', 'DATA_VORTEX', '404', 'NaN', 'µS'];
+
+  // Safe initialization of audio asset
+  useEffect(() => {
+    try {
+      audioRef.current = new Audio(Music);
+      audioRef.current.loop = true;
+    } catch (err) {
+      console.error("Failed to initialize audio file context:", err);
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
 
   // PHASE 1: Terminal Typewriter Effect
   useEffect(() => {
@@ -92,7 +110,7 @@ export default function InvitationApp() {
     return () => clearInterval(interval);
   }, [stage]);
 
-  // PHASE 1 & 2 Background Matrix Core Loop
+  // Background Canvas Matrix Loop
   useEffect(() => {
     if (stage !== 'hacked' && stage !== 'form') return;
     const canvas = introCanvasRef.current;
@@ -165,12 +183,25 @@ export default function InvitationApp() {
     return () => { cancelAnimationFrame(animationFrameId); window.removeEventListener('resize', handleResize); };
   }, [stage]);
 
+  /* =========================================================
+     AUDIO RULE 1: MUSIC STARTS ON VIDEO1
+     ========================================================= */
+  useEffect(() => {
+    if (stage === 'video1') {
+      if (audioRef.current) {
+        audioRef.current.play().catch(err => {
+          console.warn("Browser audio policy delay or connection drop handled:", err);
+        });
+      }
+    }
+  }, [stage]);
+
   const handleVideo1End = () => {
     if (video1Ref.current) video1Ref.current.pause();
     setStage('invitedText'); 
   };
 
-  // Monitor Video 2 run time to pause it and reveal elements before it ends
+  // Monitor Video 2 Core Framework Timing
   useEffect(() => {
     if (stage !== 'video2') return;
 
@@ -188,7 +219,7 @@ export default function InvitationApp() {
     return () => clearInterval(checkTime);
   }, [stage]);
 
-  // Enhanced visual glitch generation logic for transition sequence
+  // Glitch Generation Engine
   useEffect(() => {
     if (stage !== 'blackout') return;
     
@@ -200,7 +231,7 @@ export default function InvitationApp() {
     ];
 
     const glitchInterval = setInterval(() => {
-      const lineCount = Math.floor(Math.random() * 9) + 6; // Increased element density
+      const lineCount = Math.floor(Math.random() * 9) + 6; 
       const lines = [];
       for (let i = 0; i < lineCount; i++) {
         lines.push({
@@ -210,18 +241,46 @@ export default function InvitationApp() {
           left: Math.random() * 18 + '%',
           scale: Math.random() * 0.5 + 0.85,
           opacity: Math.random() * 0.6 + 0.4,
-          skewX: Math.random() * 24 - 12 + 'deg' // Added active horizontal layer skewing
+          skewX: Math.random() * 24 - 12 + 'deg' 
         });
       }
       setGlitchLines(lines);
-    }, 55); // Sped up frame loop timing for intensity
+    }, 55); 
 
     return () => clearInterval(glitchInterval);
   }, [stage]);
 
+  /* =========================================================
+     AUDIO RULE 2: AFTER CLICKING JOIN, MUSIC PAUSES
+     ========================================================= */
   const handleJoinClick = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     setStage('blackout');
   };
+
+  /* =========================================================
+     AUDIO RULE 3: CLICK FOLDER TO RESUME MUSIC
+     ========================================================= */
+  const handleFolderOpenClick = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(err => {
+        console.warn("Context interruption caught during track playback resume:", err);
+      });
+    }
+    setIsFolderOpened(true);
+  };
+
+  /* =========================================================
+     AUDIO RULE 4: WHEN TELEVISION CLOSES, MUSIC STOPS
+     ========================================================= */
+  useEffect(() => {
+    if (stage === 'tvTurnedOff' && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0; 
+    }
+  }, [stage]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -239,12 +298,10 @@ export default function InvitationApp() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center overflow-hidden font-mono text-white select-none relative w-full">
       
-      {/* Background Canvas Intro */}
       {['hacked', 'form'].includes(stage) && (
         <canvas ref={introCanvasRef} className="absolute inset-0 w-full h-full block z-0" />
       )}
 
-      {/* Background Video Layer 1 */}
       {['video1', 'invitedText'].includes(stage) && (
         <div className="absolute inset-0 z-10 bg-black w-full h-full">
           <video
@@ -260,7 +317,6 @@ export default function InvitationApp() {
         </div>
       )}
 
-      {/* Background Video Layer 2 Persistent Stage */}
       {['video2', 'envelope'].includes(stage) && (
         <div className="absolute inset-0 z-10 bg-black w-full h-full overflow-hidden">
           <video
@@ -278,7 +334,6 @@ export default function InvitationApp() {
             }`} 
           />
 
-          {/* Eyelids configuring natural blinks */}
           {stage === 'video2' && (
             <div className="absolute inset-0 z-55 pointer-events-none flex flex-col justify-between">
               <motion.div 
@@ -316,7 +371,6 @@ export default function InvitationApp() {
 
       <AnimatePresence mode="wait">
 
-        {/* POST-EMAIL WHITE FLASH SCREEN */}
         {stage === 'whiteFlash' && (
           <motion.div
             key="white-flash-stage"
@@ -331,7 +385,6 @@ export default function InvitationApp() {
           />
         )}
         
-        {/* PHASE 1: LOG ENTRY INTRO */}
         {stage === 'hacked' && (
           <motion.div
             key="hacked-stage"
@@ -362,7 +415,6 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* PHASE 2: LOGIN SUBMIT FORM */}
         {stage === 'form' && (
           <motion.div
             key="form-stage"
@@ -409,7 +461,6 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* INTERSTITIAL: "YOU ARE INVITED!" */}
         {stage === 'invitedText' && (
           <motion.div
             key="invited-text-stage"
@@ -441,7 +492,6 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* GLITCH OUT ERROR SEQUENCE */}
         {stage === 'blackout' && (
           <motion.div
             key="blackout-stage"
@@ -454,7 +504,6 @@ export default function InvitationApp() {
             }}
             className="absolute inset-0 z-55 bg-zinc-950 select-none overflow-hidden flex flex-col justify-between p-6 border-4 border-red-600/30"
           >
-            {/* Embedded scanline channel separation overlay style */}
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-red-500/5 to-transparent mix-blend-color-dodge animate-pulse" />
             
             <div className="w-full flex items-center justify-between text-red-500/80 text-xs border-b border-red-900/50 pb-2">
@@ -487,11 +536,9 @@ export default function InvitationApp() {
           </motion.div>
         )}
 
-        {/* PHASE 3: OPENING ENVELOPE / FULL SCREEN CONTENT LANDSCAPE GRID */}
         {stage === 'envelope' && (
           <div className="absolute inset-0 z-40 flex items-center justify-center bg-transparent">
             
-            {/* INITIAL FOLDER ICON WRAPPER / CLICK TO REVEAL */}
             {!isFolderOpened && (
               <motion.div
                 key="folder-trigger"
@@ -499,7 +546,7 @@ export default function InvitationApp() {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 1.1, opacity: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                onClick={() => setIsFolderOpened(true)}
+                onClick={handleFolderOpenClick}
                 className="relative cursor-pointer w-[340px] h-[460px] flex flex-col items-center justify-center bg-gradient-to-br from-red-600 via-red-700 to-red-900 rounded-2xl border-2 border-red-500/40 shadow-[0_25px_50px_rgba(0,0,0,0.8)] p-6"
               >
                 <div className="absolute top-4 right-4 text-red-400/30 font-mono text-[9px]">//SECURE_08</div>
@@ -522,7 +569,6 @@ export default function InvitationApp() {
               </motion.div>
             )}
 
-            {/* FULLY EXPANDED CANVA-STYLE GRID LAYOUT REVEALED */}
             {isFolderOpened && (
               <motion.div
                 key="opened-folder-content"
@@ -534,7 +580,6 @@ export default function InvitationApp() {
                 }}
                 className="absolute inset-0 w-full h-full flex flex-col justify-between items-center p-8 z-50 pointer-events-auto bg-transparent"
               >
-                {/* Floating twinkling star particles directly in-grid */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden mix-blend-screen opacity-70">
                   <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-white rounded-full blur-[1px] animate-ping" style={{ animationDuration: '3s' }} />
                   <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-white rounded-full blur-[2px] animate-pulse" style={{ animationDuration: '4s' }} />
@@ -542,11 +587,9 @@ export default function InvitationApp() {
                   <div className="absolute top-10 right-10 w-2 h-2 bg-white rounded-full blur-[1px] animate-ping" style={{ animationDuration: '5s' }} />
                 </div>
 
-                {/* Main Balanced Canva Workspace Section Split Container */}
                 <div className="flex-1 w-full max-w-6xl mx-auto flex items-center justify-center px-4">
                   <div className="grid grid-cols-2 gap-12 items-center justify-center w-full">
                     
-                    {/* LEFT CONTAINER LAYER: Sized Exactly to 3.5 Ratio Aspect, Expanded Max Width, added rounded-xl border curving */}
                     <div className="w-full flex justify-end">
                       <img 
                         src={displayedImageUrl} 
@@ -555,7 +598,6 @@ export default function InvitationApp() {
                       />
                     </div>
 
-                    {/* RIGHT CONTAINER LAYER: Stacked Typography and Native Raw QR Element Retaining Exact Proportions, added rounded-xl curving */}
                     <div className="w-full flex flex-col items-center justify-start text-center">
                       <span className="text-white text-sm font-black tracking-[0.3em] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,1)] mb-4">
                         TAKE A PHOTO
@@ -575,7 +617,6 @@ export default function InvitationApp() {
                   </div>
                 </div>
 
-                {/* BOTTOM FIXED GLOBAL WORKSPACE SYSTEM FOOTER BAR */}
                 <div className="w-full max-w-7xl px-4 flex justify-between items-center text-[10px] text-zinc-400 font-mono uppercase tracking-widest opacity-60 mt-auto">
                   <span>CBD-PLDS PBB 2026</span>
                   <span className="truncate max-w-[250px]">SIG: {email}</span>
@@ -586,7 +627,6 @@ export default function InvitationApp() {
           </div>
         )}
 
-        {/* RETRO TV CRT POWER-OFF BLINK DISINTEGRATION ENGINE */}
         {stage === 'tvTurnedOff' && (
           <motion.div
             key="tv-turned-off-stage"
